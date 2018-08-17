@@ -9,5 +9,5 @@ type HomeController struct{
 }
 
 func (this *HomeController) Get() {
-	this.TplName = "/admin/index.html"
+	this.TplName = "admin/index.html"
 }

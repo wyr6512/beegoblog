@@ -10,5 +10,5 @@ type CategoryController struct{
 
 func (this *CategoryController) Get() {
 	this.Data["Website"] = "beego.me"
-	this.TplName = "/admin/category/index.html"
+	this.TplName = "admin/category/index.html"
 }
