@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 
@@ -9,14 +10,28 @@ import (
 
 func init() {
 	//注册驱动
-	orm.RegisterDriver("mysql", orm.DR_MySQL)
+	orm.RegisterDriver("mysql", orm.DRMySQL)
 	//设置默认数据库
-	orm.RegisterDataBase("default", "mysql", "root:123456@/blog?charset=utf8", 30)
+	dbconnstr := beego.AppConfig.String("dbuser") + ":" + beego.AppConfig.String("dbpassword") + "@tcp(" + beego.AppConfig.String("dbhost") + ":" + beego.AppConfig.String("dbport") + ")/" + beego.AppConfig.String("dbname") + "?charset=utf8"
+
+	orm.RegisterDataBase("default", "mysql", dbconnstr, 30)
 	//注册定义的model
-	orm.RegisterModel(new(Category), new(Article), new(Comment))
+	orm.RegisterModel(new(Category), new(Article), new(Comment), new(Content), new(Tag), new(ArticleTag))
 
 	// 创建table
 	orm.RunSyncdb("default", false, true)
+}
+
+const (
+	PageSize = 10
+)
+
+type Pager struct {
+	PageNo     int64
+	PageSize   int64
+	TotalPage  int64
+	TotalCount int64
+	List       interface{}
 }
 
 //分类
