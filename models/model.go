@@ -37,9 +37,9 @@ type Pager struct {
 //分类
 type Category struct {
 	Id           int64
-	Name         string `orm:"size(32)"`
-	Views        int64
-	ArticleCount int64
+	Name         string    `orm:"size(32)"`
+	Views        int64     `orm:"default(0)"`
+	ArticleCount int64     `orm:"default(0)"`
 	CreatedAt    time.Time `orm:"auto_now_add;type(datetime)"`
 	UpdateAt     time.Time `orm:"auto_now;type(datetime)"`
 }
@@ -52,11 +52,11 @@ type Article struct {
 	Title         string `orm:"size(128)"`
 	Abstract      string
 	CategoryId    int64
-	Views         int64
+	Views         int64 `orm:"default(0)"`
 	Tags          string
-	ReplyCount    int64
+	ReplyCount    int64     `orm:"default(0)"`
 	ReplyLastTime time.Time `orm:"auto_now;type(datetime)"`
-	ReplyLastUid  int64
+	ReplyLastUid  int64     `orm:"default(0)"`
 	Status        int       `orm:"default(0)"`
 	CreatedAt     time.Time `orm:"auto_now_add;type(datetime);index"`
 	UpdateAt      time.Time `orm:"auto_now;type(datetime);index"`
