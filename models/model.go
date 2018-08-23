@@ -23,16 +23,8 @@ func init() {
 }
 
 const (
-	PageSize = 10
+	PageSize = 1
 )
-
-type Pager struct {
-	PageNo     int64
-	PageSize   int64
-	TotalPage  int64
-	TotalCount int64
-	List       interface{}
-}
 
 //分类
 type Category struct {
@@ -41,7 +33,7 @@ type Category struct {
 	Views        int64     `orm:"default(0)"`
 	ArticleCount int64     `orm:"default(0)"`
 	CreatedAt    time.Time `orm:"auto_now_add;type(datetime)"`
-	UpdateAt     time.Time `orm:"auto_now;type(datetime)"`
+	UpdatedAt     time.Time `orm:"auto_now;type(datetime)"`
 }
 
 //文章
@@ -59,7 +51,7 @@ type Article struct {
 	ReplyLastUid  int64     `orm:"default(0)"`
 	Status        int       `orm:"default(0)"`
 	CreatedAt     time.Time `orm:"auto_now_add;type(datetime);index"`
-	UpdateAt      time.Time `orm:"auto_now;type(datetime);index"`
+	UpdatedAt      time.Time `orm:"auto_now;type(datetime);index"`
 }
 
 //文章内容
@@ -68,7 +60,7 @@ type Content struct {
 	ArticleId int64     `orm:"index"`
 	Content   string    `orm:"size(5000)"`
 	CreatedAt time.Time `orm:"auto_now_add;type(datetime);index"`
-	UpdateAt  time.Time `orm:"auto_now;type(datetime);index"`
+	UpdatedAt  time.Time `orm:"auto_now;type(datetime);index"`
 }
 
 //评论

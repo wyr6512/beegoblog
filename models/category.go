@@ -36,7 +36,7 @@ func GetCategoryList(name string, pageNo, pageSize int64) (cates []*Category, er
 		qs.Filter("name", name)
 	}
 	offset := (pageNo - 1) * pageSize
-	_, err = qs.Limit(pageSize, offset).All(&cates)
+	_, err = qs.OrderBy("-id").Limit(pageSize, offset).All(&cates)
 	if err != nil {
 		return nil, err
 	}

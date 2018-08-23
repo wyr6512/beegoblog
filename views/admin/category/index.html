@@ -24,7 +24,7 @@
 	                    <input type="text" class="form-control" placeholder="名称">
 	                </div>
 	                <button type="submit" class="btn btn-primary btn-sm">搜索</button>
-	                <a href="javascript:void(0);" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#editDialog">
+	                <a id="add" href="javascript:void(0);" class="btn btn-primary btn-sm pull-right" >
 	                	<i class="ace-icon fa fa-plus"></i>新增</a>
 	            </form>
 	        </div>
@@ -51,14 +51,14 @@
 	                <td>{{.ArticleCount}}</td>
 	                <td>{{.Views}}</td>
 	                <td>{{.CreatedAt}}</td>
-	                <td>{{.UpdateAt}}</td>
-	                <td>操作</td>
+	                <td>{{.UpdatedAt}}</td>
+	                <td><a class="btn btn-primary btn-sm" onclick="edit(this)" data-id="{{.Id}}" data-name={{.Name}}>编辑</a> <a class="btn btn-primary btn-sm" data-id="{{.Id}}" onclick="delCate(this)">删除</a></td>
                 </tr>
                 {{end}}
 	            </tbody>
 	        </table>
 
-{{.Pager}}
+		{{template "admin/pager.tpl" .}}
             <!-- /.row -->
            <!-- <div class="form-group">
                <label for="exampleInputEmail1">Email address</label>
@@ -114,31 +114,56 @@
 
 
 <script type="text/javascript">	
-	$('#editDialog').on('shown.bs.modal', function (event) {
-		var button = $(event.relatedTarget);
-  		var id = button.data('id');
-  		if(id){
-  			$(this).find('.modal-title').text('编辑');
-  			$(this).find('input[name=id]').val(id);
-  		}else{
-			$(this).find('.modal-title').text('新增');
-  		}
-  		$('#submit').click(function(){
-	  		$.ajax({
-	  			url:'/admin/category',
-	  			type:'post',
-	  			data:{
-	  				id:id,
-	  				name:$('#editDialog').find('input[name=name]').val(),
-	  			},
-	  			success:function(data){
-	  				console.log(data);
-	  				alert(data);
-	  			}
-	  		});
+	$('#add').click(function(){
+		$('#editDialog').find('input[name=id]').val('');
+		$('#editDialog').find('.modal-title').text('新增');
+		$('#editDialog').modal();
+	});
+
+	var edit = function(obj){
+		$('#editDialog').find('.modal-title').text('编辑');
+		$('#editDialog').find('input[name=id]').val($(obj).data('id'));
+		$('#editDialog').find('input[name=name]').val($(obj).data('name'));
+		$('#editDialog').modal();
+	};
+
+    $('#submit').click(function(){
+  		$.ajax({
+  			url:'/admin/category',
+  			type:'post',
+  			data:{
+  				id:$('#editDialog').find('input[name=id]').val(),
+  				name:$('#editDialog').find('input[name=name]').val(),
+  			},
+  			success:function(data){
+  				alert('操作成功');
+  				location.reload();
+  			},
+  			error:function(){
+  				alert('操作失败');
+  			}
   		});
 	});
-	
+
+	var delCate = function(obj){
+		if(confirm('确定要删除吗')){
+			$.ajax({
+	  			url:'/admin/category/delete',
+	  			type:'post',
+	  			data:{
+	  				id:$(obj).data('id'),
+	  			},
+	  			success:function(data){
+	  				alert('操作成功');
+	  				location.reload();
+	  			},
+	  			error:function(){
+	  				alert('操作失败');
+	  			}
+	  		});
+		}
+	};
+		
 </script>
 </body>
 

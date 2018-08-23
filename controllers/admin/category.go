@@ -2,15 +2,18 @@ package admin
 
 import (
 	"beegoblog/models"
+	"beegoblog/controllers"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/utils/pagination"
 
 	"strconv"
+	"time"
+	// "fmt"
 )
 
 type CategoryController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 //列表
@@ -50,14 +53,22 @@ func (this *CategoryController) Post() {
 		id, err := strconv.ParseInt(strid, 10, 64)
 		if err != nil {
 			beego.Error(err)
-		}
+			this.ResponseJson(400, "invalid params", true)
+		}		
 		cate := &models.Category{
 			Id:   id,
-			Name: this.Input().Get("name"),
 		}
+		err = models.GetCategoryOne(cate)
+		if err !=nil{
+			beego.Error(err)
+			this.ResponseJson(400, "can not find this category", true)
+		}		
+		cate.Name = this.Input().Get("name")
+		cate.UpdatedAt = time.Now()
 		err = models.UpdateCategory(cate)
 		if err != nil {
 			beego.Error(err)
+			this.ResponseJson(500, err.Error(), true)
 		}
 	} else { //新增
 		cate := &models.Category{
@@ -68,6 +79,28 @@ func (this *CategoryController) Post() {
 			beego.Error(err)
 		}
 	}
-	this.Data["json"] = map[string]interface{}{"code": 200, "msg": "success"}
-	this.ServeJSON()
+	this.ResponseJson(200, "success", true)
+}
+
+func (this *CategoryController) Delete() {
+	beego.Info(this.GetInt64("id"));
+	strid := this.Input().Get("id")
+	if len(strid) > 0 { 
+		id, err := strconv.ParseInt(strid, 10, 64)
+		if err != nil {
+			beego.Error(err)
+			this.ResponseJson(400, "invalid params", true)
+		}		
+		cate := &models.Category{
+			Id:   id,
+		}
+		err = models.DeleteCategory(cate)
+		if err !=nil{
+			beego.Error(err)
+			this.ResponseJson(400, "can not find this category", true)
+		}
+		this.ResponseJson(200, "success", true)		
+	}else{
+		this.ResponseJson(400, "need id"+strid, true)
+	}
 }
