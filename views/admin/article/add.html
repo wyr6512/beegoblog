@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{{template "admin/header.tpl" .}}
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        {{template "admin/nav.tpl"}}
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">文章管理-添加</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+
+            
+
+			<div class="space-6"></div>
+
+	        
+
+		{{template "admin/edit.tpl" .}}
+
+    </div>
+    <!-- /#wrapper -->
+
+    {{template "admin/footer.tpl"}}
+
+
+
+<script type="text/javascript">	
+  $('button[type=submit]').click(function () {
+    location.href = '/admin/category?name='+$('form').find('input').val();
+    return false;
+  });
+	$('#add').click(function(){
+		$('#editDialog').find('input[name=id]').val('');
+		$('#editDialog').find('.modal-title').text('新增');
+		$('#editDialog').modal();
+	});
+
+	var edit = function(obj){
+		$('#editDialog').find('.modal-title').text('编辑');
+		$('#editDialog').find('input[name=id]').val($(obj).data('id'));
+		$('#editDialog').find('input[name=name]').val($(obj).data('name'));
+		$('#editDialog').modal();
+	};
+
+    $('#submit').click(function(){
+  		$.ajax({
+  			url:'/admin/category',
+  			type:'post',
+  			data:{
+  				id:$('#editDialog').find('input[name=id]').val(),
+  				name:$('#editDialog').find('input[name=name]').val(),
+  			},
+  			success:function(data){
+  				alert('操作成功');
+  				location.reload();
+  			},
+  			error:function(){
+  				alert('操作失败');
+  			}
+  		});
+	});
+
+	var delCate = function(obj){
+		if(confirm('确定要删除吗')){
+			$.ajax({
+	  			url:'/admin/category/delete',
+	  			type:'post',
+	  			data:{
+	  				id:$(obj).data('id'),
+	  			},
+	  			success:function(data){
+	  				alert('操作成功');
+	  				location.reload();
+	  			},
+	  			error:function(){
+	  				alert('操作失败');
+	  			}
+	  		});
+		}
+	};
+		
+</script>
+</body>
+
+</html>

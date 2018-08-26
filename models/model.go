@@ -33,7 +33,7 @@ type Category struct {
 	Views        int64     `orm:"default(0)"`
 	ArticleCount int64     `orm:"default(0)"`
 	CreatedAt    time.Time `orm:"auto_now_add;type(datetime)"`
-	UpdatedAt     time.Time `orm:"auto_now;type(datetime)"`
+	UpdatedAt    time.Time `orm:"auto_now;type(datetime)"`
 }
 
 //文章
@@ -51,7 +51,7 @@ type Article struct {
 	ReplyLastUid  int64     `orm:"default(0)"`
 	Status        int       `orm:"default(0)"`
 	CreatedAt     time.Time `orm:"auto_now_add;type(datetime);index"`
-	UpdatedAt      time.Time `orm:"auto_now;type(datetime);index"`
+	UpdatedAt     time.Time `orm:"auto_now;type(datetime);index"`
 }
 
 //文章内容
@@ -60,7 +60,7 @@ type Content struct {
 	ArticleId int64     `orm:"index"`
 	Content   string    `orm:"size(5000)"`
 	CreatedAt time.Time `orm:"auto_now_add;type(datetime);index"`
-	UpdatedAt  time.Time `orm:"auto_now;type(datetime);index"`
+	UpdatedAt time.Time `orm:"auto_now;type(datetime);index"`
 }
 
 //评论
@@ -84,4 +84,25 @@ type ArticleTag struct {
 	Id        int64
 	ArticleId int64 `orm:"index"`
 	TagId     int64 `orm:"index"`
+}
+
+//添加
+func Add(obj interface{}) error {
+	o := orm.NewOrm()
+	_, err := o.Insert(obj)
+	return err
+}
+
+//修改
+func Update(obj interface{}) error {
+	o := orm.NewOrm()
+	_, err := o.Update(obj)
+	return err
+}
+
+//删除
+func Delete(obj interface{}) error {
+	o := orm.NewOrm()
+	_, err := o.Delete(obj)
+	return err
 }

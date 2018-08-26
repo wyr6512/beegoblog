@@ -55,17 +55,16 @@ func (this *CategoryController) Post() {
 			beego.Error(err)
 			this.ResponseJson(400, "invalid params", true)
 		}
-		cate := &models.Category{
-			Id: id,
-		}
-		err = models.GetCategoryOne(cate)
+
+		cate, err := models.GetCategoryOne(id)
 		if err != nil {
 			beego.Error(err)
 			this.ResponseJson(400, "can not find this category", true)
 		}
 		cate.Name = this.Input().Get("name")
 		cate.UpdatedAt = time.Now()
-		err = models.UpdateCategory(cate)
+		beego.Info(cate)
+		err = models.Update(cate)
 		if err != nil {
 			beego.Error(err)
 			this.ResponseJson(500, err.Error(), true)
@@ -74,7 +73,7 @@ func (this *CategoryController) Post() {
 		cate := &models.Category{
 			Name: this.Input().Get("name"),
 		}
-		err := models.AddCategory(cate)
+		err := models.Add(cate)
 		if err != nil {
 			beego.Error(err)
 		}
@@ -94,7 +93,7 @@ func (this *CategoryController) Delete() {
 		cate := &models.Category{
 			Id: id,
 		}
-		err = models.DeleteCategory(cate)
+		err = models.Delete(cate)
 		if err != nil {
 			beego.Error(err)
 			this.ResponseJson(400, "can not find this category", true)

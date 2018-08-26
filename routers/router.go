@@ -11,4 +11,6 @@ func init() {
 	beego.Router("/admin", &admin.HomeController{})
 	beego.Router("/admin/category/delete", &admin.CategoryController{}, "*:Delete")
 	beego.Router("/admin/category", &admin.CategoryController{})
+	beego.Router("/admin/article/add", &admin.ArticleController{}, "*:Add")
+	beego.Router("/admin/article", &admin.ArticleController{})
 }

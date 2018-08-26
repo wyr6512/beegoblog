@@ -26,15 +26,15 @@ func DeleteCategory(cate *Category) error {
 }
 
 //获取单个
-func GetCategoryOne(cate *Category) error {
+func GetCategoryOne(id int64) (*Category, error) {
+	cate := new(Category)
 	o := orm.NewOrm()
-	err := o.QueryTable("category").One(cate)
-	return err
+	err := o.QueryTable("category").Filter("id", id).One(cate)
+	return cate, err
 }
 
 //获取列表
 func GetCategoryList(name string, pageNo, pageSize int64) (cates []*Category, err error) {
-	orm.Debug = true
 	o := orm.NewOrm()
 	qs := o.QueryTable("category")
 	if len(name) > 0 {
