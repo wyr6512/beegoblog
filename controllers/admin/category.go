@@ -1,8 +1,8 @@
 package admin
 
 import (
-	"beegoblog/models"
 	"beegoblog/controllers"
+	"beegoblog/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/utils/pagination"
@@ -41,7 +41,7 @@ func (this *CategoryController) Get() {
 	p := pagination.NewPaginator(this.Ctx.Request, models.PageSize, count)
 	this.Data["Pager"] = p
 	this.Data["List"] = cates
-	this.Data["Website"] = "beego.me"
+	this.Data["Name"] = name
 	this.Data["Title"] = "分类"
 	this.TplName = "admin/category/index.html"
 }
@@ -54,15 +54,15 @@ func (this *CategoryController) Post() {
 		if err != nil {
 			beego.Error(err)
 			this.ResponseJson(400, "invalid params", true)
-		}		
+		}
 		cate := &models.Category{
-			Id:   id,
+			Id: id,
 		}
 		err = models.GetCategoryOne(cate)
-		if err !=nil{
+		if err != nil {
 			beego.Error(err)
 			this.ResponseJson(400, "can not find this category", true)
-		}		
+		}
 		cate.Name = this.Input().Get("name")
 		cate.UpdatedAt = time.Now()
 		err = models.UpdateCategory(cate)
@@ -83,24 +83,24 @@ func (this *CategoryController) Post() {
 }
 
 func (this *CategoryController) Delete() {
-	beego.Info(this.GetInt64("id"));
+	beego.Info(this.GetInt64("id"))
 	strid := this.Input().Get("id")
-	if len(strid) > 0 { 
+	if len(strid) > 0 {
 		id, err := strconv.ParseInt(strid, 10, 64)
 		if err != nil {
 			beego.Error(err)
 			this.ResponseJson(400, "invalid params", true)
-		}		
+		}
 		cate := &models.Category{
-			Id:   id,
+			Id: id,
 		}
 		err = models.DeleteCategory(cate)
-		if err !=nil{
+		if err != nil {
 			beego.Error(err)
 			this.ResponseJson(400, "can not find this category", true)
 		}
-		this.ResponseJson(200, "success", true)		
-	}else{
+		this.ResponseJson(200, "success", true)
+	} else {
 		this.ResponseJson(400, "need id"+strid, true)
 	}
 }

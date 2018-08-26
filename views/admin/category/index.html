@@ -21,7 +21,7 @@
             <div class="">
 	            <form action="" class="form-inline">
 	                <div class="form-group form-group-sm">
-	                    <input type="text" class="form-control" placeholder="名称">
+	                    <input type="text" class="form-control" placeholder="名称" value="{{.Name}}">
 	                </div>
 	                <button type="submit" class="btn btn-primary btn-sm">搜索</button>
 	                <a id="add" href="javascript:void(0);" class="btn btn-primary btn-sm pull-right" >
@@ -114,6 +114,10 @@
 
 
 <script type="text/javascript">	
+  $('button[type=submit]').click(function () {
+    location.href = '/admin/category?name='+$('form').find('input').val();
+    return false;
+  });
 	$('#add').click(function(){
 		$('#editDialog').find('input[name=id]').val('');
 		$('#editDialog').find('.modal-title').text('新增');

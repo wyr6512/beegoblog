@@ -10,30 +10,35 @@ func AddCategory(cate *Category) error {
 	_, err := o.Insert(cate)
 	return err
 }
+
 //修改
 func UpdateCategory(cate *Category) error {
 	o := orm.NewOrm()
 	_, err := o.Update(cate)
 	return err
 }
+
 //删除
 func DeleteCategory(cate *Category) error {
 	o := orm.NewOrm()
 	_, err := o.Delete(cate)
 	return err
 }
+
 //获取单个
 func GetCategoryOne(cate *Category) error {
 	o := orm.NewOrm()
 	err := o.QueryTable("category").One(cate)
 	return err
 }
+
 //获取列表
 func GetCategoryList(name string, pageNo, pageSize int64) (cates []*Category, err error) {
+	orm.Debug = true
 	o := orm.NewOrm()
 	qs := o.QueryTable("category")
 	if len(name) > 0 {
-		qs.Filter("name", name)
+		qs = qs.Filter("name__contains", name)
 	}
 	offset := (pageNo - 1) * pageSize
 	_, err = qs.OrderBy("-id").Limit(pageSize, offset).All(&cates)
@@ -42,12 +47,13 @@ func GetCategoryList(name string, pageNo, pageSize int64) (cates []*Category, er
 	}
 	return cates, nil
 }
+
 //获取总数
 func GetCategoryCount(name string) (int64, error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable("category")
 	if len(name) > 0 {
-		qs.Filter("name", name)
+		qs = qs.Filter("name__contains", name)
 	}
 	cnt, err := qs.Count()
 	if err != nil {
