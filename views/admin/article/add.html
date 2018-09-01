@@ -15,56 +15,89 @@
                 <div class="col-lg-12">
                     <h1 class="page-header">文章管理-添加</h1>
                 </div>
-                <!-- /.col-lg-12 -->
+                
             </div>
-
             
 
-			<div class="space-6"></div>
+  			    <div class="space-6"></div>
+            <form role="form">
+               <div class="form-group">
+                 <label for="txtTitle">标题</label>
+                 <input type="text" class="form-control" name="title" id="txtTitle" placeholder="标题">
+               </div>
+               <div class="form-group">
+                 <label for="txtAbstract">摘要</label>
+                 <textarea rows="3" class="form-control" name="abstract" id="txtAbstract" placeholder="摘要"></textarea>
+               </div>
+               <div class="form-group">
+                 <label for="selectCategory">分类</label>
+                 <select class="form-control" name="category" id="selectCategory"></select>
+               </div>
+               <div class="form-group">
+                 <label for="txtTags">标签</label>
+                 <input type="text" class="form-control" name="tags" id="txtTags" placeholder="标签">
+               </div>
+              <div class="form-group">
+                 <label for="editor">内容</label>
+                  <div id="editor">
+                    <p></p>
+                  </div>
+              </div>
+              
+               <button type="submit" class="btn btn-default">提交</button>
+            </form>
 
-	        
-
-		{{template "admin/edit.tpl" .}}
-		</div>
-    </div>
-    <!-- /#wrapper -->
-
+  		    </div>
+      </div>
+    
     {{template "admin/footer.tpl"}}
-
-<script src="/static/back/lib/bootstrap-wysiwyg.js"></script>
+<script src="/static/back/lib/wangEditor-3.1.1/wangEditor.min.js"></script>
 <script type="text/javascript">
-  $(function(){
-    function initToolbarBootstrapBindings() {
-      var fonts = ['Serif', 'Sans', 'Arial', 'Arial Black', 'Courier', 
-            'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande', 'Lucida Sans', 'Tahoma', 'Times',
-            'Times New Roman', 'Verdana'],
-            fontTarget = $('[title=Font]').siblings('.dropdown-menu');
-      $.each(fonts, function (idx, fontName) {
-          fontTarget.append($('<li><a data-edit="fontName ' + fontName +'" style="font-family:\''+ fontName +'\'">'+fontName + '</a></li>'));
-      });
-      $('a[title]').tooltip({container:'body'});
-      $('.dropdown-menu input').click(function() {return false;})
-        .change(function () {$(this).parent('.dropdown-menu').siblings('.dropdown-toggle').dropdown('toggle');})
-        .keydown('esc', function () {this.value='';$(this).change();});
+  
+  $(function () {
+    var E = window.wangEditor
+    var editor = new E('#editor')
+    editor.customConfig.uploadImgServer = '/upload';
+    editor.create();
 
-      $('[data-role=magic-overlay]').each(function () { 
-        var overlay = $(this), target = $(overlay.data('target')); 
-        overlay.css('opacity', 0).css('position', 'absolute').offset(target.offset()).width(target.outerWidth()).height(target.outerHeight());
+    bindCategory();
+
+    $('type[submit]').click(function(){
+      var data=$('form').serialize();
+      data.content = editor.txt.html();
+      $.ajax({
+        url:'admin/article/post',
+        type:'post',
+        dataType:'json',
+        data:data,
+        success:function(data){
+          
+        },
+        error:function(error){
+          console.log(error);
+        }
       });
-      $('#voiceBtn').hide();
-      // if ("onwebkitspeechchange"  in document.createElement("input")) {
-      //   var editorOffset = $('#editor').offset();
-      //   $('#voiceBtn').css('position','absolute').offset({top: editorOffset.top, left: editorOffset.left+$('#editor').innerWidth()-35});
-      // } else {
-      //   $('#voiceBtn').hide();
-      // }
-    };
-    initToolbarBootstrapBindings();  
-    $('#editor').wysiwyg();
-    window.prettyPrint && prettyPrint();
+    });
   });
+  //绑定分类
+  var bindCategory = function(){
+    $.ajax({
+      url:'/admin/category/all',
+      type:'get',
+      dataType:'json',
+      success:function(data){
+        if(data && data.code == 200){
+          for(var i in data.msg){
+            $('#selectCategory').append('<option value="'+data.msg[i].Id+'">'+data.msg[i].Name+'</option>');
+          }
+        }
+      },
+      error:function(error){
+        console.log(error);
+      }
+    });
+  };      
 </script>
-
 </body>
 
 </html>

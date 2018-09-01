@@ -82,3 +82,37 @@ func GetArticleCount(params ArticleParams) (int64, error) {
 	}
 	return cnt, nil
 }
+
+func AddArticle(article *Article, content string) error {
+	o := orm.NewOrm()
+	o.Begin()
+	_, err := o.Insert(article)
+	if err != nil {
+		err = o.Rollback()
+	}
+	cont := &Content{
+		Content:   content,
+		ArticleId: article.Id,
+	}
+	_, err = o.Insert(cont)
+	if err != nil {
+		err = o.Rollback()
+	}
+	o.Commit()
+	return err
+}
+
+func UpdateArticle(article *Article, content *Content) error {
+	o := orm.NewOrm()
+	o.Begin()
+	_, err := o.Update(article)
+	if err != nil {
+		err = o.Rollback()
+	}
+	_, err = o.Update(content)
+	if err != nil {
+		err = o.Rollback()
+	}
+	o.Commit()
+	return err
+}

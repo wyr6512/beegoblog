@@ -46,6 +46,17 @@ func (this *CategoryController) Get() {
 	this.TplName = "admin/category/index.html"
 }
 
+func (this *CategoryController) GetAll() {
+	cates, err := models.GetCategoryList("", 1, 999999)
+
+	if err != nil {
+		beego.Error(err)
+		this.ResponseJson(500, err.Error(), true)
+	} else {
+		this.ResponseJson(200, cates, true)
+	}
+}
+
 //添加和修改
 func (this *CategoryController) Post() {
 	strid := this.Input().Get("id")
