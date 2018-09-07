@@ -84,6 +84,7 @@ func GetArticleCount(params ArticleParams) (int64, error) {
 }
 
 func AddArticle(article *Article, content string) error {
+	orm.Debug = true
 	o := orm.NewOrm()
 	o.Begin()
 	_, err := o.Insert(article)
@@ -110,6 +111,21 @@ func UpdateArticle(article *Article, content *Content) error {
 		err = o.Rollback()
 	}
 	_, err = o.Update(content)
+	if err != nil {
+		err = o.Rollback()
+	}
+	o.Commit()
+	return err
+}
+
+func DeleteArticle(article *Article) error {
+	o := orm.NewOrm()
+	o.Begin()
+	_, err := o.Raw("delete from content where article_id = ?", article.Id).Exec()
+	if err != nil {
+		err = o.Rollback()
+	}
+	_, err = o.Delete(article)
 	if err != nil {
 		err = o.Rollback()
 	}

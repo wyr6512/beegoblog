@@ -8,6 +8,7 @@ import (
 	"github.com/astaxie/beego/utils/pagination"
 
 	"strconv"
+	"strings"
 	"time"
 	// "fmt"
 )
@@ -61,8 +62,9 @@ func (this *ArticleController) Get() {
 			beego.Error(err)
 		}
 	}
+	title := this.Input().Get("title")
 	params := models.ArticleParams{
-		Title:    this.Input().Get("title"),
+		Title:    title,
 		Status:   status,
 		FromTime: this.Input().Get("from"),
 		EndTime:  this.Input().Get("end"),
@@ -89,7 +91,7 @@ func (this *ArticleController) Get() {
 	p := pagination.NewPaginator(this.Ctx.Request, models.PageSize, count)
 	this.Data["Pager"] = p
 	this.Data["List"] = articles
-
+	this.Data["Query"] = title
 	this.Data["Title"] = "文章列表"
 	this.TplName = "admin/article/index.html"
 }
@@ -102,11 +104,17 @@ func (this *ArticleController) Post() {
 		this.ResponseJson(400, err.Error(), true)
 	}
 	if len(strId) == 0 { //新增
+		strTags := this.Input().Get("tags")
+		tags := strTags
+		if len(strTags) > 0 {
+			tags = strings.Replace(strTags, ",", "#$", -1)
+			tags = "#" + tags + "$"
+		}
 		article := &models.Article{
 			Title:      this.Input().Get("title"),
 			Abstract:   this.Input().Get("abstract"),
 			CategoryId: categoryId,
-			Tags:       this.Input().Get("tags"),
+			Tags:       tags,
 		}
 		err = models.AddArticle(article, this.Input().Get("content"))
 		if err != nil {
@@ -134,4 +142,27 @@ func (this *ArticleController) Post() {
 		}
 	}
 	this.ResponseJson(200, "success", true)
+}
+
+func (this *ArticleController) Delete() {
+	beego.Info(this.GetInt64("id"))
+	strid := this.Input().Get("id")
+	if len(strid) > 0 {
+		id, err := strconv.ParseInt(strid, 10, 64)
+		if err != nil {
+			beego.Error(err)
+			this.ResponseJson(400, "invalid params", true)
+		}
+		article := &models.Article{
+			Id: id,
+		}
+		err = models.DeleteArticle(article)
+		if err != nil {
+			beego.Error(err)
+			this.ResponseJson(400, "can not find this article", true)
+		}
+		this.ResponseJson(200, "success", true)
+	} else {
+		this.ResponseJson(400, "need id"+strid, true)
+	}
 }

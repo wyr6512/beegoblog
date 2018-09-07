@@ -21,7 +21,7 @@
             <div class="">
 	            <form action="" class="form-inline">
 	                <div class="form-group form-group-sm">
-	                    <input type="text" class="form-control" placeholder="名称" value="{{.Name}}">
+	                    <input type="text" class="form-control" placeholder="名称" value="{{.Query}}">
 	                </div>
 	                <button type="submit" class="btn btn-primary btn-sm">搜索</button>
 	                <a id="add" href="/admin/article/add" class="btn btn-primary btn-sm pull-right" >
@@ -35,9 +35,9 @@
 	            <thead>
 	            <tr>
 	                <th width="50">#</th>
-	                <th>名称</th>
-	                <th>文章数</th>
-	                <th>浏览数</th>
+	                <th>标题</th>
+	                <th>分类</th>
+	                <th>标签</th>
 	                <th>创建日期</th>
 	                <th>更新日期</th>
 	                <th>操作</th>
@@ -46,13 +46,13 @@
 	            <tbody>
             	{{range .List}}
             	<tr>
-	                <td width="50">#</td>
-	                <td>{{.Name}}</td>
-	                <td>{{.ArticleCount}}</td>
-	                <td>{{.Views}}</td>
+	                <td width="50">{{.Id}}</td>
+	                <td>{{.Title}}</td>
+	                <td>{{.CategoryId}}</td>
+	                <td>{{.Tags}}</td>
 	                <td>{{.CreatedAt}}</td>
 	                <td>{{.UpdatedAt}}</td>
-	                <td><a class="btn btn-primary btn-sm" onclick="edit(this)" data-id="{{.Id}}" data-name={{.Name}}>编辑</a> <a class="btn btn-primary btn-sm" data-id="{{.Id}}" onclick="delCate(this)">删除</a></td>
+	                <td><a class="btn btn-primary btn-sm" href="/admin/article/edit?id={{.Id}}">编辑</a> <a class="btn btn-primary btn-sm" data-id="{{.Id}}" onclick="delArticle(this)">删除</a></td>
                 </tr>
                 {{end}}
 	            </tbody>
@@ -68,44 +68,14 @@
 
 <script type="text/javascript">	
   $('button[type=submit]').click(function () {
-    location.href = '/admin/category?name='+$('form').find('input').val();
+    location.href = '/admin/article?title='+$('form').find('input').val();
     return false;
   });
-	$('#add').click(function(){
-		$('#editDialog').find('input[name=id]').val('');
-		$('#editDialog').find('.modal-title').text('新增');
-		$('#editDialog').modal();
-	});
-
-	var edit = function(obj){
-		$('#editDialog').find('.modal-title').text('编辑');
-		$('#editDialog').find('input[name=id]').val($(obj).data('id'));
-		$('#editDialog').find('input[name=name]').val($(obj).data('name'));
-		$('#editDialog').modal();
-	};
-
-    $('#submit').click(function(){
-  		$.ajax({
-  			url:'/admin/category',
-  			type:'post',
-  			data:{
-  				id:$('#editDialog').find('input[name=id]').val(),
-  				name:$('#editDialog').find('input[name=name]').val(),
-  			},
-  			success:function(data){
-  				alert('操作成功');
-  				location.reload();
-  			},
-  			error:function(){
-  				alert('操作失败');
-  			}
-  		});
-	});
-
-	var delCate = function(obj){
+	   
+	var delArticle = function(obj){
 		if(confirm('确定要删除吗')){
 			$.ajax({
-	  			url:'/admin/category/delete',
+	  			url:'/admin/article/delete',
 	  			type:'post',
 	  			data:{
 	  				id:$(obj).data('id'),
