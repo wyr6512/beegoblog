@@ -9,15 +9,13 @@ import (
 
 	"strconv"
 	"time"
-	// "fmt"
 )
 
-type CategoryController struct {
+type TagController struct {
 	controllers.BaseController
 }
 
-//列表
-func (this *CategoryController) Get() {
+func (this *TagController) Get() {
 	name := this.Input().Get("name")
 	page := this.Input().Get("p")
 	var pageNo int64
@@ -30,35 +28,24 @@ func (this *CategoryController) Get() {
 			beego.Error(err)
 		}
 	}
-	count, err := models.GetCategoryCount(name)
+	count, err := models.GetTagCount(name)
 	if err != nil {
 		beego.Error(err)
 	}
-	cates, err := models.GetCategoryList(name, pageNo, models.PageSize)
+	tags, err := models.GetTagList(name, pageNo, models.PageSize)
 	if err != nil {
 		beego.Error(err)
 	}
 	p := pagination.NewPaginator(this.Ctx.Request, models.PageSize, count)
 	this.Data["Pager"] = p
-	this.Data["List"] = cates
+	this.Data["List"] = tags
 	this.Data["Name"] = name
-	this.Data["Title"] = "分类"
-	this.TplName = "admin/category/index.html"
-}
-
-func (this *CategoryController) GetAll() {
-	cates, err := models.GetCategoryList("", 1, 999999)
-
-	if err != nil {
-		beego.Error(err)
-		this.ResponseJson(500, err.Error(), true)
-	} else {
-		this.ResponseJson(200, cates, true)
-	}
+	this.Data["Title"] = "标签"
+	this.TplName = "admin/tag/index.html"
 }
 
 //添加和修改
-func (this *CategoryController) Post() {
+func (this *TagController) Post() {
 	strid := this.Input().Get("id")
 	if len(strid) > 0 { //编辑
 		id, err := strconv.ParseInt(strid, 10, 64)
@@ -67,23 +54,23 @@ func (this *CategoryController) Post() {
 			this.ResponseJson(400, "invalid params", true)
 		}
 
-		cate, err := models.GetCategoryOne(id)
+		tag, err := models.GetTagOne(id)
 		if err != nil {
 			beego.Error(err)
 			this.ResponseJson(400, "can not find this category", true)
 		}
-		cate.Name = this.Input().Get("name")
-		cate.UpdatedAt = time.Now()
-		err = models.Update(cate)
+		tag.Name = this.Input().Get("name")
+		tag.UpdatedAt = time.Now()
+		err = models.Update(tag)
 		if err != nil {
 			beego.Error(err)
 			this.ResponseJson(500, err.Error(), true)
 		}
 	} else { //新增
-		cate := &models.Category{
+		tag := &models.Tag{
 			Name: this.Input().Get("name"),
 		}
-		err := models.Add(cate)
+		err := models.Add(tag)
 		if err != nil {
 			beego.Error(err)
 		}
@@ -91,7 +78,7 @@ func (this *CategoryController) Post() {
 	this.ResponseJson(200, "success", true)
 }
 
-func (this *CategoryController) Delete() {
+func (this *TagController) Delete() {
 	beego.Info(this.GetInt64("id"))
 	strid := this.Input().Get("id")
 	if len(strid) > 0 {
@@ -100,10 +87,10 @@ func (this *CategoryController) Delete() {
 			beego.Error(err)
 			this.ResponseJson(400, "invalid params", true)
 		}
-		cate := &models.Category{
+		tag := &models.Tag{
 			Id: id,
 		}
-		err = models.Delete(cate)
+		err = models.Delete(tag)
 		if err != nil {
 			beego.Error(err)
 			this.ResponseJson(400, "can not find this category", true)

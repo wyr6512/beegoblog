@@ -37,6 +37,7 @@ func (this *ArticleController) Edit() {
 		if err != nil {
 			beego.Error(err)
 		}
+		article.Tags = strings.Trim(strings.Replace(article.Tags, "$#", ",", -1), "#$")
 		content, err := models.GetContentByArticleId(article.Id)
 		if err != nil {
 			beego.Error(err)
@@ -44,6 +45,7 @@ func (this *ArticleController) Edit() {
 		this.Data["Article"] = article
 		this.Data["Content"] = content
 	}
+	this.Data["ArticleId"] = id
 	this.Data["Title"] = "文章-编辑"
 	this.TplName = "admin/article/add.html"
 }
@@ -103,18 +105,13 @@ func (this *ArticleController) Post() {
 		beego.Error(err)
 		this.ResponseJson(400, err.Error(), true)
 	}
+	strTags := this.Input().Get("tags")
 	if len(strId) == 0 { //新增
-		strTags := this.Input().Get("tags")
-		tags := strTags
-		if len(strTags) > 0 {
-			tags = strings.Replace(strTags, ",", "#$", -1)
-			tags = "#" + tags + "$"
-		}
 		article := &models.Article{
 			Title:      this.Input().Get("title"),
 			Abstract:   this.Input().Get("abstract"),
 			CategoryId: categoryId,
-			Tags:       tags,
+			Tags:       strTags,
 		}
 		err = models.AddArticle(article, this.Input().Get("content"))
 		if err != nil {
@@ -133,8 +130,13 @@ func (this *ArticleController) Post() {
 			this.ResponseJson(500, err.Error(), true)
 		}
 		content, err := models.GetContentByArticleId(article.Id)
+		article.Title = this.Input().Get("title")
+		article.Abstract = this.Input().Get("abstract")
+		article.Tags = strTags
+		article.CategoryId = categoryId
 		article.UpdatedAt = time.Now()
 		content.UpdatedAt = time.Now()
+		content.Content = this.Input().Get("content")
 		err = models.UpdateArticle(article, content)
 		if err != nil {
 			beego.Error(err)

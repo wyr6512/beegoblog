@@ -23,7 +23,7 @@
                 <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                 </li>
                 <li class="divider"></li>
-                <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                <li><a href="/login?exit=yes"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                 </li>
             </ul>
             <!-- /.dropdown-user -->
@@ -47,28 +47,26 @@
                     <!-- /input-group -->
                 </li>
                 <li>
-                    <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                    <a href="/admin"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                 </li>
                 <li>
-                    <a href="tables.html"><i class="fa fa-table fa-fw"></i> 分类管理</a>
+                    <a href="/admin/category"><i class="fa fa-table fa-fw"></i> 分类管理</a>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-wrench fa-fw"></i> 文章管理<span class="fa arrow"></span></a>
+                    <a href="/admin/article"><i class="fa fa-wrench fa-fw"></i> 文章管理<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a href="panels-wells.html">列表</a>
+                            <a href="/admin/article">列表</a>
                         </li>
                         <li>
-                            <a href="buttons.html">添加/编辑</a>
+                            <a href="/admin/article/add">添加/编辑</a>
                         </li>                                
                     </ul>
                     <!-- /.nav-second-level -->
                 </li>
+                
                 <li>
-                    <a href="forms.html"><i class="fa fa-edit fa-fw"></i> 评论管理</a>
-                </li>
-                <li>
-                    <a href="forms.html"><i class="fa fa-edit fa-fw"></i> 标签管理</a>
+                    <a href="/admin/tag"><i class="fa fa-edit fa-fw"></i> 标签管理</a>
                 </li>
             </ul>
         </div>

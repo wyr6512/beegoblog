@@ -21,13 +21,14 @@
 
   			    <div class="space-6"></div>
             <form role="form">
+              <input type="hidden" name="id" value="{{.ArticleId}}">
                <div class="form-group">
                  <label for="txtTitle">标题</label>
-                 <input type="text" class="form-control" name="title" id="txtTitle" placeholder="标题">
+                 <input type="text" class="form-control" value="{{.Article.Title}}" name="title" id="txtTitle" placeholder="标题">
                </div>
                <div class="form-group">
                  <label for="txtAbstract">摘要</label>
-                 <textarea rows="3" class="form-control" name="abstract" id="txtAbstract" placeholder="摘要"></textarea>
+                 <textarea rows="3" class="form-control" name="abstract" id="txtAbstract" placeholder="摘要">{{.Article.Abstract}}</textarea>
                </div>
                <div class="form-group">
                  <label for="selectCategory">分类</label>
@@ -35,7 +36,7 @@
                </div>
                <div class="form-group">
                  <label for="txtTags">标签</label>
-                 <input type="text" class="js-tags form-control" name="tags" id="txtTags" placeholder="标签">
+                 <input type="text" class="js-tags form-control" value="{{.Article.Tags}}" name="tags" id="txtTags" placeholder="标签">
                </div>              
               <div class="form-group">
                  <label for="editor">内容</label>
@@ -62,13 +63,17 @@
     editor.customConfig.uploadImgServer = '/admin/upload';
     // 将图片大小限制为 3M
     editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024;
-	// 限制一次最多上传 1 张图片
-	editor.customConfig.uploadImgMaxLength = 1;
-	editor.customConfig.uploadFileName = 'upload_file';
+  	// 限制一次最多上传 1 张图片
+  	editor.customConfig.uploadImgMaxLength = 1;
+  	editor.customConfig.uploadFileName = 'upload_file';
 
     editor.create();
+    var content = '{{.Content.Content}}';
+    editor.txt.html(content);
 
-    bindCategory();
+    var cateId = '{{.Article.CategoryId}}';
+    bindCategory(cateId);
+    
 
     $('#submit').click(function(){
       var data=$('form').serialize();
@@ -80,7 +85,12 @@
         dataType:'json',
         data:data,
         success:function(data){
-          alert('添加成功');
+          if($('input[name=id]').val()){
+            alert('修改成功');
+          }else{
+            alert('添加成功');
+          }
+          location.href='/admin/article';
         },
         error:function(error){
           console.log(error);
@@ -91,19 +101,20 @@
     $('.js-tags').tagsInput({
         'height':'80px',
         'width':'500px',
-        'defaultText':'添加标签',
+        'defaultText':'添加标签', 
     });
   });
   //绑定分类
-  var bindCategory = function(){
+  var bindCategory = function(cateId){
     $.ajax({
       url:'/admin/category/all',
       type:'get',
       dataType:'json',
       success:function(data){
-        if(data && data.code == 200){
+        if(data && data.code == 200){          
           for(var i in data.msg){
-            $('#selectCategory').append('<option value="'+data.msg[i].Id+'">'+data.msg[i].Name+'</option>');
+            var selected = cateId==data.msg[i].Id?'selected':'';
+            $('#selectCategory').append('<option '+selected+' value="'+data.msg[i].Id+'">'+data.msg[i].Name+'</option>');
           }
         }
       },
