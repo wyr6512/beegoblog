@@ -9,11 +9,13 @@ import (
 
 	"net/http"
 	"strings"
+	"time"
 )
 
 func main() {
 	beego.AddFuncMap("processTags", processTags)
 	beego.AddFuncMap("getCateName", getCateName)
+	beego.AddFuncMap("formatTime", formatTime)
 	//后台鉴权
 	beego.InsertFilter("/admin/*", beego.BeforeRouter, func(ctx *context.Context) {
 		cookie, err := ctx.Request.Cookie("Authorization")
@@ -37,5 +39,10 @@ func getCateName(in int64) (out string) {
 	} else {
 		out = cate.Name
 	}
+	return
+}
+
+func formatTime(in time.Time) (out string) {
+	out = in.Format("2006-01-02 15:04")
 	return
 }

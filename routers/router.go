@@ -1,13 +1,13 @@
 package routers
 
 import (
-	//"beegoblog/controllers"
+	"beegoblog/controllers"
 	"beegoblog/controllers/admin"
 	"github.com/astaxie/beego"
 )
 
 func init() {
-	//beego.Router("/", &controllers.MainController{})
+	beego.Router("/", &controllers.MainController{})
 	beego.Router("/login", &admin.LoginController{})
 	beego.Router("/admin", &admin.HomeController{})
 	beego.Router("/admin/category/all", &admin.CategoryController{}, "*:GetAll")

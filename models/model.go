@@ -78,7 +78,7 @@ type Tag struct {
 	Id        int64
 	Name      string    `orm:"size(16);unique"`
 	CreatedAt time.Time `orm:"auto_now_add;type(datetime);index"`
-	UpdatedAt time.Time `orm:"auto_now;type(datetime),index"`
+	UpdatedAt time.Time `orm:"auto_now;type(datetime);index"`
 }
 
 //文章-标签对应关系
