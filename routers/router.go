@@ -8,6 +8,10 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.MainController{})
+	beego.Router("/category/:name", &controllers.MainController{}, "*:GetCateArticles")
+	beego.Router("/tag/:name", &controllers.MainController{}, "*:GetTagArticles")
+	beego.Router("/article/:id", &controllers.MainController{}, "*:GetArticleDetail")
+
 	beego.Router("/login", &admin.LoginController{})
 	beego.Router("/admin", &admin.HomeController{})
 	beego.Router("/admin/category/all", &admin.CategoryController{}, "*:GetAll")

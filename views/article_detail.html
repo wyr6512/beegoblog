@@ -15,15 +15,21 @@
     <div class="container">
 
       <div class="blog-header">
-        {{if .IsTag}}
-         <h1 class="blog-title">标签：{{.Tag.Name}} 文章列表</h1>
-        {{end}}
+       
       </div>
 
       <div class="row">
 
         <div class="col-sm-8 blog-main">
-          {{template "list.tpl" .}}
+         <div class="blog-post">
+            <h2 class="blog-post-title">{{.Article.Title}}</h2>
+            <p class="blog-post-meta">{{.Article.CreatedAt | formatTime}} by <a href="https://github.com/wyr6512/beegoblog">wyr6512</a></p>
+
+            <p>{{.Article.Abstract}}</p>
+            <hr>
+            <p>{{str2html .Content.Content}}</p>
+          </div><!-- /.blog-post -->
+
           {{template "pager.tpl" .}}
 
         </div><!-- /.blog-main -->

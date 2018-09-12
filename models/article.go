@@ -7,14 +7,18 @@ import (
 	"time"
 )
 
+//文章查询参数
 type ArticleParams struct {
-	Title    string
-	Status   int
-	FromTime string
-	EndTime  string
-	Tag      string
+	Title      string
+	Status     int
+	FromTime   string
+	EndTime    string
+	Tag        string
+	CategoryId int64
+	Ids        []int64
 }
 
+//根据文章id获取文章内容
 func GetArticleOne(id int64) (*Article, error) {
 	article := new(Article)
 	o := orm.NewOrm()
@@ -22,6 +26,20 @@ func GetArticleOne(id int64) (*Article, error) {
 	return article, err
 }
 
+//分页
+func GetArticlePager(params ArticleParams, pageNo, pageSize int64) (article []*Article, count int64, err error) {
+	count, err = GetArticleCount(params)
+	if err != nil {
+		return article, 0, err
+	}
+	articles, err := GetArticleList(params, pageNo, PageSize)
+	if err != nil {
+		return article, 0, err
+	}
+	return articles, count, nil
+}
+
+//获取列表
 func GetArticleList(params ArticleParams, pageNo, pageSize int64) (article []*Article, err error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable("article")
@@ -30,6 +48,9 @@ func GetArticleList(params ArticleParams, pageNo, pageSize int64) (article []*Ar
 	}
 	if params.Status > 0 {
 		qs = qs.Filter("status", params.Status)
+	}
+	if params.CategoryId > 0 {
+		qs = qs.Filter("category_id", params.CategoryId)
 	}
 	if len(params.FromTime) > 0 {
 		t, err := time.Parse("2006-01-02 15:04:05", params.FromTime)
@@ -46,6 +67,9 @@ func GetArticleList(params ArticleParams, pageNo, pageSize int64) (article []*Ar
 	if len(params.Tag) > 0 {
 		qs = qs.Filter("tags__contains", params.Tag)
 	}
+	if len(params.Ids) > 0 {
+		qs = qs.Filter("id__in", params.Ids)
+	}
 	offset := (pageNo - 1) * pageSize
 	_, err = qs.OrderBy("-id").Limit(pageSize, offset).All(&article)
 	if err != nil {
@@ -54,6 +78,7 @@ func GetArticleList(params ArticleParams, pageNo, pageSize int64) (article []*Ar
 	return article, nil
 }
 
+//获取总数
 func GetArticleCount(params ArticleParams) (int64, error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable("article")
@@ -85,6 +110,7 @@ func GetArticleCount(params ArticleParams) (int64, error) {
 	return cnt, nil
 }
 
+//添加文章
 func AddArticle(article *Article, content string) error {
 	orm.Debug = true
 	o := orm.NewOrm()
@@ -143,6 +169,7 @@ func AddArticle(article *Article, content string) error {
 	return err
 }
 
+//更新文章
 func UpdateArticle(article *Article, content *Content) error {
 	o := orm.NewOrm()
 	o.Begin()
@@ -169,7 +196,7 @@ func UpdateArticle(article *Article, content *Content) error {
 	}
 	mapTags := ArrayToMap(existsTags)
 	//删除已存在文章标签关系
-	err = DeleteTags(article.Id)
+	err = DeleteArticleTags(article.Id)
 	if err != nil {
 		err = o.Rollback()
 	}
@@ -201,6 +228,7 @@ func UpdateArticle(article *Article, content *Content) error {
 	return err
 }
 
+//删除文章
 func DeleteArticle(article *Article) error {
 	o := orm.NewOrm()
 	o.Begin()
