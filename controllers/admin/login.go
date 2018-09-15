@@ -15,7 +15,6 @@ func (this *LoginController) Get() {
 	if isExit {
 		this.Ctx.SetCookie("Authorization", "", -100, "/")
 		this.Ctx.SetCookie("uname", "", -100, "/")
-		this.Ctx.SetCookie("pwd", "", -100, "/")
 		this.Redirect("/login", 302)
 		return
 	}
@@ -36,7 +35,6 @@ func (this *LoginController) Post() {
 		}
 		this.Ctx.SetCookie("Authorization", token, maxAge, "/")
 		this.Ctx.SetCookie("uname", uname, maxAge, "/")
-		this.Ctx.SetCookie("pwd", pwd, maxAge, "/")
 		this.Redirect("/admin", 302)
 		return
 	}

@@ -18,10 +18,10 @@
                 <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
             </a>
             <ul class="dropdown-menu dropdown-user">
-                <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                <!-- <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
                 </li>
                 <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                </li>
+                </li> -->
                 <li class="divider"></li>
                 <li><a href="/login?exit=yes"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                 </li>
@@ -35,7 +35,7 @@
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
-                <li class="sidebar-search">
+                <!-- <li class="sidebar-search">
                     <div class="input-group custom-search-form">
                         <input type="text" class="form-control" placeholder="Search...">
                         <span class="input-group-btn">
@@ -44,8 +44,8 @@
                         </button>
                     </span>
                     </div>
-                    <!-- /input-group -->
-                </li>
+                    
+                </li> -->
                 <li>
                     <a href="/admin"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                 </li>

@@ -8,7 +8,7 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.MainController{})
-	beego.Router("/category/:name", &controllers.MainController{}, "*:GetCateArticles")
+	beego.Router("/category/:id", &controllers.MainController{}, "*:GetCateArticles")
 	beego.Router("/tag/:name", &controllers.MainController{}, "*:GetTagArticles")
 	beego.Router("/article/:id", &controllers.MainController{}, "*:GetArticleDetail")
 

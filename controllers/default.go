@@ -33,9 +33,14 @@ func (this *MainController) Get() {
 	if err != nil {
 		beego.Error(err)
 	}
+	cates, err := models.GetCategoryList("", 1, 10)
+	if err != nil {
+		beego.Error(err)
+	}
 	this.Data["Articles"] = articles
 	this.Data["Pager"] = p
 	this.Data["Tags"] = tags
+	this.Data["Categories"] = cates
 	this.Data["Title"] = "beego blog"
 	this.TplName = "index.tpl"
 }
@@ -58,12 +63,21 @@ func (this *MainController) GetCateArticles() {
 			beego.Error(err)
 		}
 	}
-	params := models.ArticleParams{
-		CategoryId: cateId,
+	articles := []*models.Article{}
+	var count int64
+	p := pagination.NewPaginator(this.Ctx.Request, models.PageSize, 0)
+	if cateId > 0 {
+		params := models.ArticleParams{
+			CategoryId: cateId,
+		}
+		articles, count, err = models.GetArticlePager(params, pageNo, models.PageSize)
+		p = pagination.NewPaginator(this.Ctx.Request, models.PageSize, count)
 	}
-	articles, count, err := models.GetArticlePager(params, pageNo, models.PageSize)
-	p := pagination.NewPaginator(this.Ctx.Request, models.PageSize, count)
 	tags, err := models.GetTagList("", 1, 20)
+	if err != nil {
+		beego.Error(err)
+	}
+	cates, err := models.GetCategoryList("", 1, 10)
 	if err != nil {
 		beego.Error(err)
 	}
@@ -71,6 +85,7 @@ func (this *MainController) GetCateArticles() {
 	this.Data["Articles"] = articles
 	this.Data["Pager"] = p
 	this.Data["Tags"] = tags
+	this.Data["Categories"] = cates
 	this.Data["Title"] = "category articles"
 	this.TplName = "index.tpl"
 }
@@ -149,9 +164,14 @@ func (this *MainController) GetArticleDetail() {
 	if err != nil {
 		beego.Error(err)
 	}
+	cates, err := models.GetCategoryList("", 1, 10)
+	if err != nil {
+		beego.Error(err)
+	}
 	this.Data["Article"] = article
 	this.Data["Content"] = content
 	this.Data["Tags"] = tags
+	this.Data["Categories"] = cates
 	this.Data["Title"] = "article detail"
 	this.TplName = "article_detail.html"
 }
